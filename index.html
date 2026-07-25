@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Expense &amp; Budget Visualizer</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <div class="app-wrapper">
+
+    <!-- HEADER -->
+    <header class="app-header">
+      <h1 class="app-header__title">Expense &amp; Budget Visualizer</h1>
+      <button class="btn-theme" id="btnTheme" aria-label="Toggle dark/light mode" title="Toggle theme">
+        <span id="themeIcon">🌙</span>
+      </button>
+    </header>
+
+    <!-- TOTAL BALANCE -->
+    <section class="card balance-card" aria-label="Total balance">
+      <p class="balance-card__label">TOTAL BALANCE</p>
+      <p class="balance-card__amount" id="totalBalance">Rp 0</p>
+      <div class="balance-card__sub">
+        <span class="badge badge--income" id="totalIncome">Income: Rp 0</span>
+        <span class="badge badge--expense" id="totalExpense">Expenses: Rp 0</span>
+      </div>
+    </section>
+
+    <!-- SPENDING LIMIT -->
+    <section class="card" aria-label="Spending limit">
+      <h2 class="card__title">⚠️ Monthly Spending Limit</h2>
+      <div class="limit-row">
+        <input type="number" id="spendingLimit" class="input" placeholder="Set limit (e.g. 5000000)" min="0" />
+        <button class="btn btn--blue" id="btnSetLimit">Set Limit</button>
+      </div>
+      <p class="limit-status" id="limitStatus"></p>
+    </section>
+
+    <!-- ADD TRANSACTION -->
+    <section class="card" aria-label="Add transaction">
+      <h2 class="card__title">Add Transaction</h2>
+      <form id="transactionForm" novalidate>
+        <div class="form-field">
+          <label class="form-label" for="txDesc">Item Name</label>
+          <input type="text" id="txDesc" class="input" placeholder="e.g. Groceries, Salary" required />
+        </div>
+        <div class="form-field">
+          <label class="form-label" for="txAmount">Amount</label>
+          <input type="number" id="txAmount" class="input" placeholder="e.g. 150000" min="1" required />
+        </div>
+        <div class="form-field">
+          <label class="form-label" for="txType">Type</label>
+          <select id="txType" class="input input--select">
+            <option value="income">Income</option>
+            <option value="expense">Expense</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label class="form-label" for="txCategory">Category</label>
+          <select id="txCategory" class="input input--select">
+            <!-- populated by JS -->
+          </select>
+        </div>
+        <div class="form-field">
+          <label class="form-label" for="txDate">Date</label>
+          <input type="date" id="txDate" class="input" required />
+        </div>
+        <p class="form-error" id="formError"></p>
+        <button type="submit" class="btn btn--blue btn--full">Add Transaction</button>
+      </form>
+    </section>
+
+    <!-- TRANSACTIONS + CHART (side by side on wide screens) -->
+    <div class="two-col">
+
+      <!-- TRANSACTION LIST -->
+      <section class="card" aria-label="Transaction list">
+        <div class="card__header">
+          <h2 class="card__title">Transactions</h2>
+          <div class="filter-row">
+            <select class="input input--select input--sm" id="filterType">
+              <option value="all">All</option>
+              <option value="income">Income</option>
+              <option value="expense">Expense</option>
+            </select>
+            <select class="input input--select input--sm" id="filterCategory">
+              <option value="all">All Categories</option>
+            </select>
+            <select class="input input--select input--sm" id="sortBy">
+              <option value="date-desc">Newest</option>
+              <option value="date-asc">Oldest</option>
+              <option value="amount-desc">Amount ↓</option>
+              <option value="amount-asc">Amount ↑</option>
+            </select>
+            <button class="btn btn--red btn--sm" id="btnClearAll">Clear All</button>
+          </div>
+        </div>
+
+        <ul class="tx-list" id="transactionList">
+          <li class="empty-state" id="emptyState">No transactions yet.</li>
+        </ul>
+      </section>
+
+      <!-- PIE CHART -->
+      <section class="card chart-card" aria-label="Spending by category">
+        <h2 class="card__title">Spending by Category</h2>
+        <div class="chart-wrap">
+          <canvas id="pieChart" width="220" height="220" aria-label="Pie chart of spending by category" role="img"></canvas>
+        </div>
+        <ul class="chart-legend" id="chartLegend"></ul>
+      </section>
+
+    </div>
+
+    <!-- CUSTOM CATEGORIES -->
+    <section class="card" aria-label="Manage categories">
+      <button class="collapsible-toggle" id="catToggle" aria-expanded="false" aria-controls="catBody">
+        <span>🏷️ Manage Categories</span>
+        <span class="chevron" id="catChevron">▶</span>
+      </button>
+      <div class="collapsible-body hidden" id="catBody">
+        <div class="limit-row">
+          <input type="text" id="newCatName" class="input" placeholder="New category name" />
+          <button class="btn btn--blue" id="btnAddCategory">Add</button>
+        </div>
+        <p class="form-error" id="catError"></p>
+        <ul class="tag-list" id="categoryList"></ul>
+      </div>
+    </section>
+
+    <!-- MONTHLY SUMMARY -->
+    <section class="card" aria-label="Monthly summary">
+      <button class="collapsible-toggle" id="summaryToggle" aria-expanded="false" aria-controls="summaryBody">
+        <span>📅 Monthly Summary</span>
+        <span class="chevron" id="summaryChevron">▶</span>
+      </button>
+      <div class="collapsible-body hidden" id="summaryBody">
+        <div class="limit-row" style="align-items:center;margin-bottom:.75rem;">
+          <label for="summaryYear" class="form-label" style="margin:0;white-space:nowrap;">Year:</label>
+          <select id="summaryYear" class="input input--select input--sm"></select>
+        </div>
+        <div class="monthly-grid" id="monthlyGrid"></div>
+      </div>
+    </section>
+
+  </div><!-- /.app-wrapper -->
+
+  <footer class="app-footer">
+    Finance Tracker &mdash; Syaiful Hidayat &mdash; CodingCamp 2025
+  </footer>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

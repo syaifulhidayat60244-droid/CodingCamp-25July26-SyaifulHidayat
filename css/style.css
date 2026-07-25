@@ -1,0 +1,531 @@
+/* ============================================================
+   EXPENSE & BUDGET VISUALIZER — style.css
+   Design: clean white cards, blue accent, red delete buttons,
+           pie chart, light/dark mode
+   ============================================================ */
+
+/* ── Tokens ──────────────────────────────────────────────── */
+:root {
+  --bg:           #f2f2f2;
+  --surface:      #ffffff;
+  --border:       #e0e0e0;
+  --text:         #1a1a1a;
+  --text-muted:   #777777;
+  --blue:         #2196f3;
+  --blue-hover:   #1976d2;
+  --blue-light:   #e3f2fd;
+  --red:          #f44336;
+  --red-hover:    #d32f2f;
+  --green:        #4caf50;
+  --shadow:       0 1px 4px rgba(0,0,0,0.10);
+  --radius:       8px;
+  --radius-sm:    5px;
+  --trans:        0.18s ease;
+}
+
+[data-theme="dark"] {
+  --bg:           #121212;
+  --surface:      #1e1e1e;
+  --border:       #333333;
+  --text:         #f0f0f0;
+  --text-muted:   #999999;
+  --blue:         #42a5f5;
+  --blue-hover:   #2196f3;
+  --blue-light:   #1a2a3a;
+  --red:          #ef5350;
+  --red-hover:    #f44336;
+  --green:        #66bb6a;
+  --shadow:       0 1px 6px rgba(0,0,0,0.4);
+}
+
+/* ── Reset ───────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { font-size: 16px; }
+
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  transition: background var(--trans), color var(--trans);
+}
+
+/* ── App wrapper ─────────────────────────────────────────── */
+.app-wrapper {
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  flex: 1;
+}
+
+/* ── Header ──────────────────────────────────────────────── */
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.25rem 0 0.5rem;
+}
+
+.app-header__title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+
+.btn-theme {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  width: 2.1rem;
+  height: 2.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background var(--trans), transform 0.12s;
+  box-shadow: var(--shadow);
+}
+.btn-theme:hover { background: var(--border); transform: scale(1.08); }
+
+/* ── Cards ───────────────────────────────────────────────── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.5rem;
+  box-shadow: var(--shadow);
+  transition: background var(--trans), border-color var(--trans);
+}
+
+.card__title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 1rem;
+}
+
+.card__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.card__header .card__title { margin-bottom: 0; }
+
+/* ── Balance card ────────────────────────────────────────── */
+.balance-card {
+  text-align: center;
+  padding: 1.75rem 1.5rem;
+}
+
+.balance-card__label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 0.35rem;
+}
+
+.balance-card__amount {
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: var(--blue);
+  letter-spacing: -0.03em;
+  margin-bottom: 0.75rem;
+}
+
+.balance-card__sub {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.badge {
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+}
+
+.badge--income  { background: #e8f5e9; color: var(--green); }
+.badge--expense { background: #ffebee; color: var(--red); }
+
+[data-theme="dark"] .badge--income  { background: #1b3a1e; }
+[data-theme="dark"] .badge--expense { background: #3a1515; }
+
+/* ── Inputs ──────────────────────────────────────────────── */
+.input {
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 0.9rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color var(--trans), box-shadow var(--trans), background var(--trans);
+}
+
+.input:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(33,150,243,0.18);
+}
+
+.input--select { cursor: pointer; }
+
+.input--sm {
+  width: auto;
+  padding: 0.38rem 0.6rem;
+  font-size: 0.8rem;
+}
+
+/* ── Form fields ─────────────────────────────────────────── */
+.form-field {
+  margin-bottom: 0.85rem;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 0.3rem;
+}
+
+.form-error {
+  font-size: 0.8rem;
+  color: var(--red);
+  min-height: 1.1em;
+  margin-bottom: 0.5rem;
+}
+
+/* ── Buttons ─────────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.55rem 1.1rem;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 0.88rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background var(--trans), transform 0.1s;
+}
+.btn:active { transform: scale(0.97); }
+
+.btn--blue  { background: var(--blue);  color: #fff; }
+.btn--blue:hover  { background: var(--blue-hover); }
+
+.btn--red   { background: var(--red);   color: #fff; }
+.btn--red:hover   { background: var(--red-hover); }
+
+.btn--full  { width: 100%; margin-top: 0.25rem; }
+
+.btn--sm {
+  padding: 0.38rem 0.75rem;
+  font-size: 0.78rem;
+}
+
+/* ── Limit row ───────────────────────────────────────────── */
+.limit-row {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.5rem;
+}
+
+.limit-row .input { flex: 1; min-width: 160px; }
+
+.limit-status {
+  font-size: 0.83rem;
+  font-weight: 600;
+  min-height: 1.2em;
+}
+.limit-status.safe { color: var(--green); }
+.limit-status.warn { color: #f59e0b; }
+.limit-status.over { color: var(--red); }
+
+/* ── Filter row ──────────────────────────────────────────── */
+.filter-row {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* ── Two-column layout ───────────────────────────────────── */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+/* ── Transaction list ────────────────────────────────────── */
+.tx-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  max-height: 360px;
+  overflow-y: auto;
+}
+
+.tx-list::-webkit-scrollbar { width: 4px; }
+.tx-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+.empty-state {
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  padding: 1.5rem 0;
+  text-align: center;
+}
+
+/* individual transaction item — matches reference design */
+.tx-item {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--border);
+  animation: fadeSlide 0.18s ease;
+}
+
+.tx-item:last-child { border-bottom: none; }
+
+@keyframes fadeSlide {
+  from { opacity: 0; transform: translateY(-5px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.tx-item--over-limit { background: #fff5f5; border-radius: var(--radius-sm); }
+[data-theme="dark"] .tx-item--over-limit { background: #2d1010; }
+
+.tx-item__info { flex: 1; min-width: 0; }
+
+.tx-item__name {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 0.15rem;
+}
+
+.tx-item__amount {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 0.2rem;
+}
+
+.tx-item__amount--income  { color: var(--blue); }
+.tx-item__amount--expense { color: var(--red); }
+
+.tx-item__cat {
+  display: inline-block;
+  font-size: 0.72rem;
+  background: #eeeeee;
+  color: #555;
+  border-radius: 4px;
+  padding: 0.1rem 0.45rem;
+}
+
+[data-theme="dark"] .tx-item__cat { background: #333; color: #aaa; }
+
+.tx-item__meta {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-top: 0.15rem;
+}
+
+.tx-item__delete {
+  background: var(--red);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 0.3rem 0.65rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  flex-shrink: 0;
+  align-self: center;
+  margin-left: 0.75rem;
+  transition: background var(--trans);
+}
+.tx-item__delete:hover { background: var(--red-hover); }
+
+/* ── Pie chart ───────────────────────────────────────────── */
+.chart-card { display: flex; flex-direction: column; }
+
+.chart-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.75rem 0;
+  flex: 1;
+}
+
+#pieChart { max-width: 220px; max-height: 220px; }
+
+.chart-legend {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem 1rem;
+  margin-top: 0.5rem;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ── Collapsible panels ──────────────────────────────────── */
+.collapsible-toggle {
+  width: 100%;
+  background: none;
+  border: none;
+  color: var(--text);
+  font-size: 0.95rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0;
+  text-align: left;
+}
+
+.collapsible-toggle:hover { color: var(--blue); }
+
+.chevron {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  transition: transform var(--trans);
+}
+.chevron.open { transform: rotate(90deg); }
+
+.collapsible-body { padding-top: 1rem; }
+.collapsible-body.hidden { display: none; }
+
+/* ── Category tags ───────────────────────────────────────── */
+.tag-list {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+}
+
+.cat-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: var(--blue-light);
+  color: var(--blue);
+  border-radius: 999px;
+  padding: 0.2rem 0.65rem 0.2rem 0.75rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.cat-tag.is-default { background: #f0f0f0; color: var(--text-muted); }
+[data-theme="dark"] .cat-tag.is-default { background: #2a2a2a; }
+
+.cat-tag__remove {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--blue);
+  font-size: 0.8rem;
+  padding: 0;
+  line-height: 1;
+  transition: color var(--trans);
+}
+.cat-tag__remove:hover { color: var(--red); }
+
+/* ── Monthly summary ─────────────────────────────────────── */
+.monthly-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 0.6rem;
+}
+
+.month-card {
+  background: #fafafa;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.75rem 0.9rem;
+}
+
+[data-theme="dark"] .month-card { background: #252525; }
+
+.month-card__name {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  margin-bottom: 0.4rem;
+}
+
+.month-card__row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  margin-bottom: 0.1rem;
+}
+
+.month-card__row span:last-child { font-weight: 700; }
+.c-income  { color: var(--green); }
+.c-expense { color: var(--red); }
+.c-positive { color: var(--green); }
+.c-negative { color: var(--red); }
+
+/* ── Footer ──────────────────────────────────────────────── */
+.app-footer {
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  padding: 1rem;
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+  transition: background var(--trans);
+}
+
+/* ── Responsive ──────────────────────────────────────────── */
+@media (max-width: 580px) {
+  .two-col { grid-template-columns: 1fr; }
+  .balance-card__amount { font-size: 1.9rem; }
+  .app-wrapper { padding: 1rem 0.75rem 1.5rem; }
+}
